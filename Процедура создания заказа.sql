@@ -20,7 +20,7 @@ BEGIN
     VALUES (p_user_id, p_address_id, p_payment_method, 'pending', NOW());
     
     SET p_order_id = LAST_INSERT_ID();
-    
+    -- дореализовать, т.к. в бд нехватает данных
     COMMIT;
 END //
 
