@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Магазин электроники - Административная панель</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+        header h1 {
+            margin: 0;
+            text-align: center;
+        }
+        .dashboard {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 20px;
+        }
+        .sidebar {
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        .sidebar nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sidebar nav ul li {
+            margin-bottom: 10px;
+        }
+        .sidebar nav ul li a {
+            display: block;
+            padding: 10px;
+            color: #333;
+            text-decoration: none;
+            border-radius: 3px;
+            transition: background-color 0.3s;
+        }
+        .sidebar nav ul li a:hover {
+            background-color: #f0f0f0;
+        }
+        .sidebar nav ul li a.active {
+            background-color: #3498db;
+            color: white;
+        }
+        .main-content {
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        .card {
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table th, table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        table th {
+            background-color: #f8f9fa;
+            font-weight: 500;
+        }
+        .btn {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        .btn-danger {
+            background-color: #e74c3c;
+        }
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-family: 'Roboto', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Административная панель магазина электроники</h1>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="dashboard">
+            <aside class="sidebar">
+                <nav>
+                    <ul>
+                        <li><a href="#" class="active" data-section="dashboard">Главная</a></li>
+                        <li><a href="#" data-section="products">Товары</a></li>
+                        <li><a href="#" data-section="categories">Категории</a></li>
+                        <li><a href="#" data-section="manufacturers">Производители</a></li>
+                        <li><a href="#" data-section="orders">Заказы</a></li>
+                        <li><a href="#" data-section="users">Пользователи</a></li>
+                    </ul>
+                </nav>
+            </aside>
+            
+            <main class="main-content">
+                <section id="dashboard-section">
+                    <h2>Статистика</h2>
+                    <div class="card">
+                        <h3>Общая информация</h3>
+                        <div id="stats-container">
+                            <p>Загрузка данных...</p>
+                        </div>
+                    </div>
+                </section>
+                
+                <section id="products-section" style="display: none;">
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h2>Товары</h2>
+                            <button class="btn" id="add-product-btn">Добавить товар</button>
+                        </div>
+                        
+                        <table id="products-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Название</th>
+                                    <th>Категория</th>
+                                    <th>Производитель</th>
+                                    <th>Цена</th>
+                                    <th>На складе</th>
+                                    <th>Действия</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Данные будут загружены через JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+                
+                <!-- Аналогичные секции для других разделов -->
+            </main>
+        </div>
+    </div>
+    
+    <!-- Модальное окно для добавления/редактирования товара -->
+    <div id="product-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
+        <div style="background-color: white; padding: 30px; border-radius: 5px; width: 600px; max-width: 90%;">
+            <h2 id="product-modal-title">Добавить товар</h2>
+            
+            <form id="product-form">
+                <input type="hidden" id="product-id">
+                
+                <div class="form-group">
+                    <label for="product-name">Название товара</label>
+                    <input type="text" id="product-name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="product-description">Описание</label>
+                    <textarea id="product-description" rows="3"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="product-price">Цена</label>
+                    <input type="number" id="product-price" step="0.01" min="0" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="product-quantity">Количество на складе</label>
+                    <input type="number" id="product-quantity" min="0" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="product-category">Категория</label>
+                    <select id="product-category" required>
+                        <!-- Опции будут загружены через JavaScript -->
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="product-manufacturer">Производитель</label>
+                    <select id="product-manufacturer" required>
+                        <!-- Опции будут загружены через JavaScript -->
+                    </select>
+                </div>
+                
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                    <button type="button" class="btn" id="cancel-product-btn">Отмена</button>
+                    <button type="submit" class="btn">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // Основной JavaScript код для работы с интерфейсом
+        document.addEventListener('DOMContentLoaded', function() {
+            // Переключение между разделами
+            const links = document.querySelectorAll('.sidebar nav ul li a');
+            const sections = document.querySelectorAll('main section');
+            
+            links.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Убираем активный класс у всех ссылок
+                    links.forEach(l => l.classList.remove('active'));
+                    // Добавляем активный класс текущей ссылке
+                    this.classList.add('active');
+                    
+                    // Скрываем все секции
+                    sections.forEach(section => {
+                        section.style.display = 'none';
+                    });
+                    
+                    // Показываем нужную секцию
+                    const sectionId = this.getAttribute('data-section') + '-section';
+                    document.getElementById(sectionId).style.display = 'block';
+                    
+                    // Загружаем данные для секции
+                    loadSectionData(this.getAttribute('data-section'));
+                });
+            });
+            
+            // Загрузка данных для текущей секции
+            function loadSectionData(section) {
+                switch(section) {
+                    case 'products':
+                        fetchProducts();
+                        break;
+                    case 'dashboard':
+                        fetchDashboardStats();
+                        break;
+                    // Добавьте обработчики для других секций
+                }
+            }
+            
+            // Загрузка статистики для главной страницы
+            function fetchDashboardStats() {
+                fetch('/api/stats')
+                    .then(response => response.json())
+                    .then(data => {
+                        const container = document.getElementById('stats-container');
+                        container.innerHTML = `
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                                <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px;">
+                                    <h4 style="margin-top: 0;">Всего товаров</h4>
+                                    <p style="font-size: 24px; font-weight: bold; margin-bottom: 0;">${data.totalProducts}</p>
+                                </div>
+                                <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px;">
+                                    <h4 style="margin-top: 0;">Всего заказов</h4>
+                                    <p style="font-size: 24px; font-weight: bold; margin-bottom: 0;">${data.totalOrders}</p>
+                                </div>
+                                <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px;">
+                                    <h4 style="margin-top: 0;">Всего пользователей</h4>
+                                    <p style="font-size: 24px; font-weight: bold; margin-bottom: 0;">${data.totalUsers}</p>
+                                </div>
+                            </div>
+                        `;
+                    })
+                    .catch(error => {
+                        console.error('Error fetching dashboard stats:', error);
+                        document.getElementById('stats-container').innerHTML = 
+                            '<p style="color: red;">Ошибка загрузки данных</p>';
+                    });
+            }
+            
+            // Загрузка списка товаров
+            function fetchProducts() {
+                fetch('/api/products')
+                    .then(response => response.json())
+                    .then(products => {
+                        const tbody = document.querySelector('#products-table tbody');
+                        tbody.innerHTML = '';
+                        
+                        products.forEach(product => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${product.product_id}</td>
+                                <td>${product.name}</td>
+                                <td>${product.category_name}</td>
+                                <td>${product.manufacturer_name}</td>
+                                <td>${product.price.toFixed(2)} ₽</td>
+                                <td>${product.stock_quantity}</td>
+                                <td>
+                                    <button class="btn edit-product-btn" data-id="${product.product_id}">Редактировать</button>
+                                    <button class="btn btn-danger delete-product-btn" data-id="${product.product_id}">Удалить</button>
+                                </td>
+                            `;
+                            tbody.appendChild(row);
+                        });
+                        
+                        // Добавляем обработчики для кнопок редактирования и удаления
+                        document.querySelectorAll('.edit-product-btn').forEach(btn => {
+                            btn.addEventListener('click', function() {
+                                editProduct(this.getAttribute('data-id'));
+                            });
+                        });
+                        
+                        document.querySelectorAll('.delete-product-btn').forEach(btn => {
+                            btn.addEventListener('click', function() {
+                                deleteProduct(this.getAttribute('data-id'));
+                            });
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error fetching products:', error);
+                        const tbody = document.querySelector('#products-table tbody');
+                        tbody.innerHTML = '<tr><td colspan="7" style="color: red;">Ошибка загрузки данных</td></tr>';
+                    });
+            }
+            
+            // Редактирование товара
+            function editProduct(productId) {
+                fetch(`/api/products/${productId}`)
+                    .then(response => response.json())
+                    .then(product => {
+                        document.getElementById('product-modal-title').textContent = 'Редактировать товар';
+                        document.getElementById('product-id').value = product.product_id;
+                        document.getElementById('product-name').value = product.name;
+                        document.getElementById('product-description').value = product.description || '';
+                        document.getElementById('product-price').value = product.price;
+                        document.getElementById('product-quantity').value = product.stock_quantity;
+                        
+                        // Показываем модальное окно
+                        document.getElementById('product-modal').style.display = 'flex';
+                    })
+                    .catch(error => {
+                        console.error('Error fetching product:', error);
+                        alert('Ошибка загрузки данных товара');
+                    });
+            }
+            
+            // Удаление товара
+            function deleteProduct(productId) {
+                if (confirm('Вы уверены, что хотите удалить этот товар?')) {
+                    fetch(`/api/products/${productId}`, {
+                        method: 'DELETE'
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            alert('Товар успешно удален');
+                            fetchProducts();
+                        } else {
+                            throw new Error('Ошибка удаления товара');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error deleting product:', error);
+                        alert('Ошибка удаления товара');
+                    });
+                }
+            }
+            
+            // Добавление нового товара
+            document.getElementById('add-product-btn').addEventListener('click', function() {
+                document.getElementById('product-modal-title').textContent = 'Добавить товар';
+                document.getElementById('product-form').reset();
+                document.getElementById('product-id').value = '';
+                
+                // Загружаем списки категорий и производителей, если они еще не загружены
+                // (реализация опущена для краткости)
+                
+                // Показываем модальное окно
+                document.getElementById('product-modal').style.display = 'flex';
+            });
+            
+            // Отмена редактирования/добавления товара
+            document.getElementById('cancel-product-btn').addEventListener('click', function() {
+                document.getElementById('product-modal').style.display = 'none';
+            });
+            
+            // Сохранение товара
+            document.getElementById('product-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const productId = document.getElementById('product-id').value;
+                const isEdit = !!productId;
+                
+                const productData = {
+                    name: document.getElementById('product-name').value,
+                    description: document.getElementById('product-description').value,
+                    price: parseFloat(document.getElementById('product-price').value),
+                    stock_quantity: parseInt(document.getElementById('product-quantity').value),
+                    category_id: parseInt(document.getElementById('product-category').value),
+                    manufacturer_id: parseInt(document.getElementById('product-manufacturer').value)
+                };
+                
+                const url = isEdit ? `/api/products/${productId}` : '/api/products';
+                const method = isEdit ? 'PUT' : 'POST';
+                
+                fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(productData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert(isEdit ? 'Товар успешно обновлен' : 'Товар успешно добавлен');
+                    document.getElementById('product-modal').style.display = 'none';
+                    fetchProducts();
+                })
+                .catch(error => {
+                    console.error('Error saving product:', error);
+                    alert('Ошибка сохранения товара');
+                });
+            });
+            
+            // Загружаем данные для главной страницы при загрузке
+            fetchDashboardStats();
+        });
+    </script>
+      <!-- Подключение JavaScript -->
+    <script src="js/utils.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
